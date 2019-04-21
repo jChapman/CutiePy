@@ -15,7 +15,12 @@ class PythonConsole: public QPlainTextEdit {
 
 public:
 	PythonConsole(QWidget* parent = nullptr);
+	~PythonConsole();
 
 private:
+	void keyPressEvent(QKeyEvent* e) override;
+	void handleCommand();
+
+	// Members
 	QString currentCommand;
 };
