@@ -12,6 +12,17 @@
 #define slots Q_SLOTS
 namespace py = pybind11;
 
+
+Controller::Controller(MainWindow* main) : mainWindow(main) {}
+void Controller::requestAction(std::string action) {
+    std::cout << action;
+}
+
+PYBIND11_MODULE(cutiepy, m) {
+    py::class_<Controller>(m, "controller")
+        .def("requestAction", &Controller::requestAction);
+}
+
 MainWindow::MainWindow() {
     mainText = new QPlainTextEdit();
     setCentralWidget(mainText);
@@ -22,7 +33,7 @@ MainWindow::MainWindow() {
     toolBar->addAction(boldAction);
     addToolBar(toolBar);
     auto consoleContainer = new QDockWidget(this);
-    auto console = new PythonConsole();
+    auto console = new PythonConsole(this);
     consoleContainer->setWidget(console);
     addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, consoleContainer);
 }
@@ -34,7 +45,7 @@ void MainWindow::boldToggled(bool boldOn) {
     mainText->setCurrentCharFormat(format);
 }
 
-PythonConsole::PythonConsole(QWidget* parent) : QPlainTextEdit(parent) {
+PythonConsole::PythonConsole(MainWindow* main, QWidget* parent) : QPlainTextEdit(parent), mainWindow(main) {
     QPalette p = palette();
     p.setColor(QPalette::Base, Qt::black);
     p.setColor(QPalette::Text, Qt::green);
@@ -44,6 +55,8 @@ PythonConsole::PythonConsole(QWidget* parent) : QPlainTextEdit(parent) {
     setFont(consoleFont);
 
     py::initialize_interpreter();
+    py::module::import("cutiepy");
+    py::object obj = py::cast(mainWindow);
 }
 
 PythonConsole::~PythonConsole() {

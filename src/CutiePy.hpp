@@ -11,17 +11,25 @@ public:
 
 public slots:
     void boldToggled(bool boldOn);
-    void starInsertRequested();
 
 private:
     QPlainTextEdit* mainText;
+};
+
+class Controller {
+public:
+    Controller(MainWindow* main);
+    void requestAction(std::string action);
+
+private:
+    MainWindow* mainWindow;
 };
 
 class PythonConsole: public QPlainTextEdit {
 	Q_OBJECT
 
 public:
-	PythonConsole(QWidget* parent = nullptr);
+	PythonConsole(MainWindow *main, QWidget* parent = nullptr);
 	~PythonConsole();
 
 private:
@@ -30,4 +38,5 @@ private:
 
 	// Members
 	QString currentCommand;
+    MainWindow* mainWindow;
 };
