@@ -3,6 +3,8 @@
 #include <QDockWidget>
 #include <QApplication>
 #include <QRegExp>
+#include <QAction>
+#include <QToolbar>
 
 #undef slots
 #include <pybind11/embed.h>
@@ -10,29 +12,26 @@
 #define slots Q_SLOTS
 namespace py = pybind11;
 
-namespace {
-    struct cout_redirect {
-        cout_redirect(std::streambuf* new_buffer)
-            : old(std::cout.rdbuf(new_buffer))
-        { }
-
-        ~cout_redirect() {
-            std::cout.rdbuf(old);
-        }
-
-    private:
-        std::streambuf* old;
-    };
-}
-
-
 MainWindow::MainWindow() {
-    auto textEdit = new QPlainTextEdit();
-    setCentralWidget(textEdit);
+    mainText = new QPlainTextEdit();
+    setCentralWidget(mainText);
+    auto boldAction = new QAction("Bold", this);
+    boldAction->setCheckable(true);
+    QObject::connect(boldAction, &QAction::toggled, this, &MainWindow::boldToggled);
+    auto toolBar = new QToolBar(this);
+    toolBar->addAction(boldAction);
+    addToolBar(toolBar);
     auto consoleContainer = new QDockWidget(this);
     auto console = new PythonConsole();
     consoleContainer->setWidget(console);
     addDockWidget(Qt::DockWidgetArea::BottomDockWidgetArea, consoleContainer);
+}
+
+void MainWindow::boldToggled(bool boldOn) {
+    QTextCharFormat format;
+    if (boldOn)
+        format.setFontWeight(QFont::Bold);
+    mainText->setCurrentCharFormat(format);
 }
 
 PythonConsole::PythonConsole(QWidget* parent) : QPlainTextEdit(parent) {

@@ -8,6 +8,13 @@ class MainWindow : public QMainWindow {
 
 public:
 	MainWindow();
+
+public slots:
+    void boldToggled(bool boldOn);
+    void starInsertRequested();
+
+private:
+    QPlainTextEdit* mainText;
 };
 
 class PythonConsole: public QPlainTextEdit {
