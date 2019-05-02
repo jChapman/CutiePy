@@ -55,7 +55,7 @@ PythonConsole::PythonConsole(MainWindow* main, QWidget* parent) : QPlainTextEdit
     setFont(consoleFont);
 
     py::initialize_interpreter();
-    py::module::import("cutiepy");
+    py::module::import("cmake_example");
     py::object obj = py::cast(mainWindow);
 }
 
@@ -95,13 +95,13 @@ void PythonConsole::handleCommand()
     bool isExpression = false;
     if (assignmentExpression.indexIn(currentCommand) == -1) {
         isExpression = true;
-        currentCommand.prepend("_ = ");
+        //currentCommand.prepend("_ = ");
     }
 
     try {
         py::exec(currentCommand.toStdString());
         if (isExpression) {
-            auto out = py::eval("str(_)").cast<std::string>();
+            //auto out = py::eval("str(_)").cast<std::string>();
         }
     }
     catch (py::error_already_set const& pyError) {
