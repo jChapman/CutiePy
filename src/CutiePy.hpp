@@ -3,6 +3,10 @@
 #include <QMainWindow>
 #include <QPlainTextEdit>
 
+namespace pybind11 {
+    class dict;
+}
+
 class MainWindow : public QMainWindow {
 	Q_OBJECT
 
@@ -39,4 +43,5 @@ private:
 	// Members
 	QString currentCommand;
     MainWindow* mainWindow;
+    pybind11::dict* locals;
 };

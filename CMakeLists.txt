@@ -8,10 +8,11 @@ add_subdirectory(pybind11)
 
 set(sources src/CutiePy.hpp
             src/CutiePy.cpp
-            src/Example.cpp
+            src/Pytroller.cpp
+            src/Pytroller.hpp
    )
 
-pybind11_add_module(cmake_example src/Example.cpp)
+pybind11_add_module(example src/Pytroller.cpp)
 
 add_executable (CutiePy ${sources})
 target_link_libraries(CutiePy PUBLIC Qt5::Widgets)

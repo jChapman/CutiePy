@@ -1,4 +1,5 @@
 ﻿#include "CutiePy.hpp"
+#include "Pytroller.hpp"
 
 #include <QDockWidget>
 #include <QApplication>
@@ -9,6 +10,7 @@
 #undef slots
 #include <pybind11/embed.h>
 #include <pybind11/iostream.h>
+#include <pybind11/stl.h>
 #define slots Q_SLOTS
 namespace py = pybind11;
 
@@ -55,7 +57,9 @@ PythonConsole::PythonConsole(MainWindow* main, QWidget* parent) : QPlainTextEdit
     setFont(consoleFont);
 
     py::initialize_interpreter();
-    py::module::import("cmake_example");
+    locals = new py::dict("name"_a = "World", "number"_a = 42);
+    auto s = new Something();
+    py::module::import("example");
     py::object obj = py::cast(mainWindow);
 }
 
@@ -99,7 +103,7 @@ void PythonConsole::handleCommand()
     }
 
     try {
-        py::exec(currentCommand.toStdString());
+        py::exec(currentCommand.toStdString(), py::globals(), *locals);
         if (isExpression) {
             //auto out = py::eval("str(_)").cast<std::string>();
         }
